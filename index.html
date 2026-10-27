@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NutriAgenda – Consultas de nutrição</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f7f3;--sf:#ffffff;--ink:#1f2d25;--mut:#5d6b62;--pri:#228653;--pri2:#e1f1e6;--acc:#e0a526;--bd:#dbe8de;--err:#b3261e;--ok:#228653;--onpri:#ffffff;--ondng:#ffffff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media not all{:root:not([data-theme="light"]){--bg:#0f1a2b;--sf:#172338;--ink:#e6eefb;--mut:#9fb2cf;--pri:#7fb2ff;--pri2:#1f3350;--acc:#e8b64a;--bd:#2a3f5e;--err:#ff8a80;--ok:#7fb2ff;--onpri:#0b1b33;--ondng:#3a0b08;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#f1f7f3;--sf:#ffffff;--ink:#1f2d25;--mut:#5d6b62;--pri:#228653;--pri2:#e1f1e6;--acc:#e0a526;--bd:#dbe8de;--err:#b3261e;--ok:#228653;--onpri:#ffffff;--ondng:#ffffff;color-scheme:light}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif}
+button,input,select{font:inherit;color:inherit}
+input,select{color:var(--ink);background-color:var(--sf)}::placeholder{color:var(--mut);opacity:.7}
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,select:-webkit-autofill{-webkit-text-fill-color:var(--ink)!important;-webkit-box-shadow:0 0 0 1000px var(--sf) inset!important;box-shadow:0 0 0 1000px var(--sf) inset!important;caret-color:var(--ink);transition:background-color 9999s ease-out}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+header{background:var(--pri);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+:root[data-theme="dark"] header,:root:not([data-theme="light"]) header{}
+header b{font-size:1.25rem;font-weight:800;flex:0 0 auto}
+header nav{flex:1}
+.out{margin-left:auto;background:transparent;border:1.5px solid rgba(255,255,255,.65);color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-weight:700}.out:hover{background:rgba(255,255,255,.18)}
+@media(max-width:700px){header b{flex:1}header nav{order:3;flex-basis:100%}.out{order:2}}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;border:0;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+nav button.on{background:rgba(255,255,255,.22)}
+@media not all{:root:not([data-theme="light"]) header{background:#1b3f78}}
+main{max-width:1000px;margin:0 auto;padding:24px}
+h1{font-size:1.6rem;margin:.2em 0 .6em;font-weight:800}h2{font-size:1.2rem;margin:.2em 0}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(34,134,83,.1)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.grow{flex:1;min-width:180px}
+.mut{color:var(--mut);font-size:.92rem}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:11px 12px;border:1.5px solid var(--bd);border-radius:10px;background:var(--sf)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}@media(max-width:560px){.g2{grid-template-columns:1fr}}
+.btn{background:var(--pri);color:var(--onpri);border:2px solid var(--pri);border-radius:10px;padding:11px 18px;font-weight:800;cursor:pointer}
+.btn.sec{background:transparent;color:var(--pri);border-color:var(--pri)}.btn.sec:hover{background:var(--pri2)}.btn.dng{background:var(--err);border-color:var(--err);color:var(--ondng)}.btn.sm{padding:7px 12px;font-size:.9rem}
+.lnk{background:none;border:0;color:var(--pri);text-decoration:underline;cursor:pointer;padding:4px 0;font-weight:600}
+.err{color:var(--err);font-size:.9rem;margin-top:4px}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--pri2);color:var(--pri);font-weight:700;font-size:.82rem}
+.tag.Cancelada{background:#f6dcda;color:#8c1d18}.tag.Encerrada{background:#e2e8e3;color:#2b3a2f}.tag.Confirmada{background:#d6ecd9;color:#1b5e2c}.tag.Agendada{background:#fbefcf;color:#7a5600}
+.star{color:var(--acc);font-weight:800}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal span{font-size:.8rem;color:var(--mut);font-weight:700}
+.cal button{aspect-ratio:1;border:1.5px solid transparent;background:transparent;border-radius:10px;cursor:pointer;font-weight:600}
+.cal button:disabled{opacity:.3;cursor:default}.cal button{color:var(--ink)}.cal button.av{background:var(--pri2);color:var(--pri);border-color:var(--pri);font-weight:800}.cal button.av:hover{background:var(--pri);color:var(--onpri)}.cal button.sel{background:var(--pri);color:var(--onpri)}
+.slots{display:flex;gap:8px;flex-wrap:wrap}
+.slots button,.chip{border:1.5px solid var(--bd);background:var(--sf);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:700}
+.slots button.sel,.chip.sel{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.slots button:disabled{opacity:.35;text-decoration:line-through;cursor:default}
+.app{display:flex;min-height:100dvh}
+aside{width:248px;flex:none;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:18px 12px;position:sticky;top:0;height:100dvh;transition:width .2s;z-index:40}
+.brand{font-size:1.2rem;font-weight:800;color:var(--pri);padding:4px 10px 18px;white-space:nowrap}
+.menu{display:flex;flex-direction:column;gap:4px}
+.mi{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;background:none;border-radius:10px;color:var(--ink);font-weight:600;cursor:pointer;text-align:left;white-space:nowrap}
+.mi svg{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mi:hover{background:var(--pri2)}.mi.on{background:var(--pri2);color:var(--pri)}
+.foot{margin-top:auto;border-top:1px solid var(--bd);padding-top:12px}.who{padding:4px 12px 10px;font-size:.9rem;overflow:hidden;text-overflow:ellipsis}
+.mi.lo{color:var(--err)}.mi.lo:hover{background:#fbe9e7}
+.tg{position:absolute;right:-14px;top:22px;width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:var(--sf);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;color:var(--mut)}
+.tg svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}aside.c .tg svg{transform:rotate(180deg)}
+.content{flex:1;min-width:0}.top,.scrim{display:none}.sub{margin:-.3em 0 1em}
+@media(min-width:761px){aside.c{width:72px}aside.c .lb{display:none}aside.c .brand{text-align:center;padding-left:0;padding-right:0}aside.c .mi{justify-content:center;padding:10px 0}}
+@media(max-width:760px){aside{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:2px 0 12px rgba(0,0,0,.2)}aside.open{transform:none}aside.open~.scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:35}.tg{display:none}.top{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--sf);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:20;color:var(--pri)}.top .mi{width:auto;padding:8px}main{padding:16px}}
+.wrap{flex:1;width:100%;max-width:560px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:var(--sf);border-left:1px solid var(--bd);border-right:1px solid var(--bd)}
+.wrap main{flex:1;max-width:none;width:100%;padding:16px 18px}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 18px 12px;border-bottom:1px solid var(--bd)}.topbar b{display:block;color:var(--pri);font-size:1.1rem;line-height:1.2}.topbar span{display:block;font-size:.8rem;color:var(--mut)}
+.home{display:flex;align-items:center;gap:10px;flex:1;background:none;border:0;padding:0;cursor:pointer;text-align:left;color:inherit;border-radius:10px}
+.logo-i{width:38px;height:38px;border-radius:10px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center}
+.ib{position:relative;border:0;background:none;color:var(--ink);padding:8px;cursor:pointer;border-radius:8px}.ib:hover{background:var(--pri2)}.ib i{position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:var(--err)}
+.tabs{position:sticky;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--bd);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:20}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:0;background:none;color:var(--mut);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:10px}.tb.on{color:var(--pri)}.tb:hover{background:var(--pri2)}
+.logo-i svg,.ib svg,.tb svg,.btn svg,.hero svg{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hero{background:var(--pri);color:#fff;border-radius:18px;padding:12px;margin-bottom:14px}.hero h2{display:flex;gap:8px;align-items:center;font-size:1rem;padding:4px 6px 10px;margin:0}
+.hero .inner{background:#fff;color:var(--ink);border-radius:12px;padding:14px}.hero hr{border:0;border-top:1px solid var(--bd);margin:12px 0}.hero p{display:flex;gap:10px;align-items:center;margin:8px 0}.hero p svg{color:var(--pri)}
+.st{margin-top:10px;text-align:center;padding:9px;border-radius:8px;background:var(--pri2);color:var(--pri);font-weight:700;font-size:.92rem}
+.cta{background:var(--pri2);border-radius:16px;padding:14px}.cta p{margin:4px 0 12px}
+.btn.blk{width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.av{width:48px;height:48px;border-radius:50%;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem}
+.pr{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--bd)}.pr b{text-align:right}
+@media(max-width:760px){.wrap{border:0}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal>.card{max-width:420px;margin:0}.modal.bk{align-items:flex-start;overflow-y:auto}.modal.bk>.card{max-width:580px;width:100%;margin:auto}.modal.bk .card .card{background:var(--bg)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:#1d2b22;color:#fff;padding:12px 18px;border-radius:12px;max-width:90vw;z-index:60;display:none}
+.auth{max-width:440px;margin:24px auto}
+.logo{font-size:2rem;font-weight:800;color:var(--pri);margin:0}
+.rc{border:2px dashed var(--pri);border-radius:14px;padding:16px;background:var(--pri2)}
+@media print{header,nav,.noprint{display:none!important}body>#app,#toast{display:none!important}.modal{position:static;background:none;display:block;padding:0}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="toast" role="status" aria-live="polite"></div>
+<script>
+const K='nutriagenda_v1';let mem=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const fd=s=>{const[a,b,c]=s.split('-');return c+'/'+b+'/'+a};
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const HORAS=[];for(let h=7;h<=19;h++)HORAS.push(pad(h)+':00');
+let db;
+function load(){try{const r=localStorage.getItem(K);if(r)return JSON.parse(r)}catch(e){}return mem}
+function save(){mem=db;try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}}
+async function hp(p,s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s.toLowerCase()+'|'+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return'x'+btoa(unescape(encodeURIComponent(s+p)))}}
+function cpfOk(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1+$/.test(c))return false;for(let t=9;t<11;t++){let s=0;for(let i=0;i<t;i++)s+=c[i]*(t+1-i);if((s*10%11)%10!=c[t])return false}return true}
+const pv=s=>parseInt(String(s).replace(/\D/g,'')||'0',10)/100;
+const hasH=u=>u.valor>0&&Object.values(u.horarios||{}).some(a=>a.length);
+const emailOk=e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3800)}
+function notify(email,msg){const u=db.users.find(x=>x.email===email);db.notes.unshift({to:email,msg,t:Date.now()});save();return u&&u.sms?'e-mail e SMS':'e-mail'}
+const me=()=>db.users.find(u=>u.email===db.session);
+const nutris=()=>db.users.filter(u=>u.perfil==='nutri');
+const avg=n=>n.aval.length?(n.aval.reduce((a,b)=>a+b,0)/n.aval.length).toFixed(1).replace('.',','):'novo';
+const taken=(nid,date,time,ign)=>db.appts.some(a=>a.nid===nid&&a.date===date&&a.time===time&&a.status!=='Cancelada'&&a.id!==ign);
+function slotsFor(n,date,ign){const wd=new Date(date+'T12:00').getDay();const now=new Date();return(n.horarios[wd]||[]).map(t=>({t,off:taken(n.email,date,t,ign)||new Date(date+'T'+t)<now}))}
+const upcoming=a=>!['Cancelada','Encerrada'].includes(a.status)&&new Date(a.date+'T'+a.time)>=new Date(Date.now()-36e5);
+
+async function seed(){
+ const pw=await hp('demo1234','paciente@demo.com');
+ const wk=(h)=>({1:h,2:h,3:h,4:h,5:h});
+ const mk=(nome,email,cpf,crn,esp,end,val,h,av)=>({perfil:'nutri',nome,email,cpf,tel:'(83) 99999-0000',crn,esp,end,valor:val,horarios:wk(h),aval:av,sms:false});
+ db={users:[],appts:[],notes:[],session:null};
+ const L=[
+  mk('Dra. Helena Albuquerque','helena@demo.com','52998224725','CRN-6 12345','Nutrição esportiva','Rua Maciel Pinheiro, 210 – Centro, Campina Grande/PB',180,['08:00','09:00','10:00','14:00','15:00','16:00'],[5,5,4,5,5]),
+  mk('Dr. Rafael Nogueira','rafael@demo.com','11144477735','CRN-6 23456','Emagrecimento e reeducação alimentar','Av. Floriano Peixoto, 900 – Centro, Campina Grande/PB',150,['09:00','10:00','11:00','15:00','16:00','17:00'],[4,5,4,4]),
+  mk('Dra. Marina Cavalcanti','marina@demo.com','39053344705','CRN-6 34567','Nutrição materno-infantil','Rua Rui Barbosa, 55 – Prata, Campina Grande/PB',200,['08:00','09:00','13:00','14:00','15:00'],[5,5,5])];
+ for(const n of L)n.pass=await hp('demo1234',n.email);
+ db.users=[...L,{perfil:'paciente',nome:'Paciente Demonstração',email:'paciente@demo.com',cpf:'52998224725',tel:'(83) 98888-1111',nasc:'1992-05-14',end:'Campina Grande/PB',pass:pw,sms:true}];
+ save();
+}
+
+let V={n:'login'},bk={},cm=new Date(),err={};
+function go(n,p={}){V={n,...p};render();window.scrollTo(0,0)}
+const IC={users:`<path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/>`,cal:`<rect x='3' y='4' width='18' height='18' rx='2'/><path d='M16 2v4M8 2v4M3 10h18'/>`,cal2:`<rect x='3' y='4' width='18' height='18' rx='2'/><path d='M16 2v4M8 2v4M3 10h18m-11 5 2 2 4-4'/>`,bell:`<path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/>`,clock:`<circle cx='12' cy='12' r='10'/><path d='M12 6v6l4 2'/>`,out:`<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9'/>`,chev:`<path d='m15 18-6-6 6-6'/>`,menu:`<path d='M4 6h16M4 12h16M4 18h16'/>`,home:`<path d='m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><path d='M9 22V12h6v10'/>`,user:`<circle cx='12' cy='8' r='4'/><path d='M4 21a8 8 0 0 1 16 0'/>`,leaf:`<path d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z'/><path d='M2 21c0-3 1.9-5.3 5-6.5 2.7-1 4.7-2.6 6-5'/>`,pin:`<path d='M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z'/><circle cx='12' cy='10' r='3'/>`,plus:`<circle cx='12' cy='12' r='10'/><path d='M8 12h8M12 8v8'/>`};
+const svg=k=>`<svg viewBox='0 0 24 24' aria-hidden='true'>${IC[k]}</svg>`;
+const SUB={lista:'Escolha um profissional e agende sua consulta.',minhas:'Acompanhe, remarque ou cancele seus agendamentos.',agenda:'Visualize e gerencie seus agendamentos.',horarios:'Defina os dias, horários e o valor da sua consulta.'};
+let col=false;try{col=localStorage.getItem('na_col')==='1'}catch(e){}
+function vInicio(){const u=me();const nx=db.appts.filter(a=>a.pid===db.session&&upcoming(a)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
+ let c;
+ if(nx){const n=db.users.find(x=>x.email===nx.nid),d=new Date(nx.date+'T12:00'),w=d.getDay();const ds=DIAS[w]+(w>0&&w<6?'-feira':'')+', '+d.getDate()+' de '+MESES[d.getMonth()].toLowerCase();
+  c=`<section class='hero'><h2>${svg('cal2')} Sua próxima consulta</h2><div class='inner'><b>${esc(n.nome)}</b><div class='mut'>${esc(n.esp)}</div><hr><p>${svg('cal')}<b>${ds}</b></p><p>${svg('clock')}${nx.time.replace(':','h')}</p><p>${svg('pin')}${esc(n.end)}</p><div class='st'>${nx.status==='Confirmada'?'Consulta confirmada':'Aguardando confirmação do profissional'}</div></div></section>`}
+ else c=`<section class='hero'><h2>${svg('cal2')} Sua próxima consulta</h2><div class='inner'><p class='mut' style='margin:0'>Você ainda não tem consulta marcada.</p></div></section>`;
+ return`<h1 style='font-size:1.4rem'>Olá, ${esc(u.nome.split(' ')[0])}! 👋</h1><p class='mut sub'>Que bom ter você por aqui.</p>${c}<section class='cta'><b>Precisa de outra consulta?</b><p class='mut'>Encontre um nutricionista e escolha o melhor horário para você.</p><button class='btn blk' data-go='lista'>${svg('plus')} Agendar consulta</button></section>`}
+function vPerfilU(){const u=me(),p=u.perfil==='paciente';const r=(l,v)=>v?`<div class='pr'><span class='mut'>${l}</span><b>${esc(v)}</b></div>`:'';
+ return`<h1>Perfil</h1><div class='card'><div class='row' style='margin-bottom:8px'><div class='av'>${esc(u.nome[0])}</div><div><b>${esc(u.nome)}</b><div class='mut'>${p?'Paciente':'Nutricionista'}</div></div></div>${r('E-mail',u.email)}${r('Telefone',u.tel)}${p?r('Nascimento',u.nasc?fd(u.nasc):''):r('CRN',u.crn)+r('Especialidade',u.esp)+r('Consultório',u.end)+r('Valor da consulta',u.valor>0?brl(u.valor):'Não definido')}</div><button class='btn sec blk' data-go='avisos'>${svg('bell')} Ver avisos</button><p></p><button class='btn dng blk' data-act='sair'>${svg('out')} Sair da conta</button>`}
+function shell(body){
+ const u=me(),pac=u.perfil==='paciente',cur=({lista:'inicio'})[V.n]||V.n;
+ const tabs=pac?[['inicio','Início','home'],['minhas','Consultas','cal2'],['perfilu','Perfil','user']]:[['agenda','Agenda','cal'],['horarios','Horários','clock'],['perfilu','Perfil','user']];
+ const nw=db.notes.some(x=>x.to===db.session&&x.t>(u.seen||0));
+ return`<div class='app'><div class='wrap'><div class='topbar'><button class='home' data-go='${pac?'inicio':'agenda'}' aria-label='Ir para o início'><div class='logo-i'>${svg('leaf')}</div><div class='grow'><b>NutriAgenda</b><span>Sua saúde, sua rotina.</span></div></button><button class='ib' data-go='avisos' aria-label='Avisos'>${svg('bell')}${nw?'<i></i>':''}</button><button class='ib' data-go='perfilu' aria-label='Perfil'>${svg('user')}</button></div><main>${SUB[V.n]?body.replace('</h1>','</h1><p class="mut sub">'+SUB[V.n]+'</p>'):body}</main><div class='tabs'>${tabs.map(([k,l,i])=>`<button class='tb ${cur===k?'on':''}' data-go='${k}'>${svg(i)}<span>${l}</span></button>`).join('')}</div></div></div>`}
+function shellOld2(body){
+ const u=me(),pac=u.perfil==='paciente',cur=V.n;
+ const tabs=pac?[['lista','Nutricionistas','users'],['minhas','Minhas consultas','cal2'],['avisos','Avisos','bell']]:[['agenda','Agenda','cal'],['horarios','Meus horários','clock'],['avisos','Avisos','bell']];
+ return`<div class="app"><aside class="${col?'c':''}" aria-label="Menu"><button class="tg" data-act="col" aria-label="Recolher ou expandir menu">${svg('chev')}</button><div class="brand">🥗 <span class="lb">NutriAgenda</span></div><div class="menu">${tabs.map(([k,l,i])=>`<button class="mi ${cur===k?'on':''}" data-go="${k}" title="${l}">${svg(i)}<span class="lb">${l}</span></button>`).join('')}</div><div class="foot"><div class="who lb"><b>${esc(u.nome)}</b><br><span class="mut">${pac?'Paciente':'Nutricionista'}</span></div><button class="mi lo" data-act="sair" title="Sair" aria-label="Sair da conta">${svg('out')}<span class="lb">Sair</span></button></div></aside><div class="scrim" data-act="menu"></div><div class="content"><div class="top"><button class="mi" data-act="menu" aria-label="Abrir menu">${svg('menu')}</button><b>🥗 NutriAgenda</b></div><main>${body.replace('</h1>','</h1><p class="mut sub">'+(SUB[cur]||'')+'</p>')}</main></div></div>`}
+function shellOld(body){
+ const u=me();const pac=u.perfil==='paciente';
+ const tabs=pac?[['lista','Nutricionistas'],['minhas','Minhas consultas'],['avisos','Avisos']]:[['agenda','Agenda'],['horarios','Meus horários'],['avisos','Avisos']];
+ const cur=V.n==='perfil'||V.n==='comp'?'lista':V.n;
+ return`<header><b>🥗 NutriAgenda</b><nav aria-label="Principal">${tabs.map(([k,l])=>`<button class="${cur===k?'on':''}" data-go="${k}">${l}</button>`).join('')}</nav><button class="out" data-act="sair" aria-label="Sair da conta">Sair</button></header><main>${body}</main>`}
+
+function render(){
+ const a=$('#app');
+ if(!db.session&&!['login','cad','esq'].includes(V.n))V={n:'login'};
+ const u=me();
+ if(db.session&&!u){db.session=null;V={n:'login'}}
+ let h='';
+ switch(V.n){
+  case'login':h=vLogin();break;case'esq':h=vEsq();break;case'cad':h=vCad();break;
+  default:{const f={lista:vLista,inicio:vInicio,perfilu:vPerfilU,perfil:vPerfil,comp:vComp,minhas:vMinhas,agenda:vAgenda,horarios:vHor,avisos:vAvisos}[V.n];h=shell(f())}
+ }
+ a.innerHTML=h;
+}
+const E=k=>err[k]?`<div class="err" role="alert">${esc(err[k])}</div>`:'';
+
+function vLogin(){return`<div class="auth"><p class="logo">🥗 NutriAgenda</p><p class="mut">Agende sua consulta com nutricionistas de forma simples.</p>
+<form class="card" id="fLogin" novalidate><h1>Entrar</h1>
+<label for="le">E-mail</label><input id="le" type="email" autocomplete="email">${E('le')}
+<label for="lp">Senha</label><input id="lp" type="password" autocomplete="current-password">${E('lp')}${E('lg')}
+<p><button class="btn" style="width:100%">Entrar</button></p>
+<button type="button" class="lnk" data-go="esq">Esqueci minha senha</button><br>
+<button type="button" class="lnk" data-go="cad">Não tem conta? Cadastre-se</button></form>
+<p class="mut card">Demonstração: <b>paciente@demo.com</b> ou <b>helena@demo.com</b> (nutricionista), senha <b>demo1234</b>.</p></div>`}
+function vEsq(){return`<div class="auth"><form class="card" id="fEsq" novalidate><h1>Recuperar senha</h1><p class="mut">Informe seu e-mail e enviaremos um link para criar uma nova senha.</p>
+<label for="ee">E-mail</label><input id="ee" type="email">${E('ee')}<p class="row"><button class="btn">Enviar link</button><button type="button" class="btn sec" data-go="login">Voltar</button></p></form></div>`}
+function vCad(){const p=V.perfil||'paciente';return`<div class="auth" style="max-width:640px"><form class="card" id="fCad" novalidate><h1>Criar conta</h1>
+<label>Eu sou</label><div class="row"><label style="font-weight:600"><input type="radio" name="perfil" value="paciente" ${p==='paciente'?'checked':''} style="width:auto"> Paciente</label><label style="font-weight:600"><input type="radio" name="perfil" value="nutri" ${p==='nutri'?'checked':''} style="width:auto"> Nutricionista</label></div>
+<div class="g2"><div><label for="cn">Nome completo</label><input id="cn" autocomplete="name">${E('cn')}</div>
+<div><label for="cc">CPF</label><input id="cc" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">${E('cc')}</div>
+<div><label for="ce">E-mail</label><input id="ce" type="email">${E('ce')}</div>
+<div><label for="ct">Telefone</label><input id="ct" type="tel" inputmode="numeric" maxlength="14" autocomplete="tel" placeholder="(83)91234-5678">${E('ct')}</div>
+<div><label for="cs">Senha (mín. 8 caracteres)</label><input id="cs" type="password" autocomplete="new-password">${E('cs')}</div>
+<div><label for="cs2">Confirmar senha</label><input id="cs2" type="password" autocomplete="new-password">${E('cs2')}</div></div>
+${p==='nutri'?`<div class="g2"><div><label for="ck">Registro no CRN</label><input id="ck" maxlength="14" inputmode="numeric" placeholder="CRN-6 0000">${E('ck')}</div>
+<div><label for="cp">Especialidade</label><input id="cp">${E('cp')}</div>
+
+<div><label for="cd">Endereço do consultório</label><input id="cd">${E('cd')}</div></div>
+<p class="mut card">Depois do cadastro, adicione seus horários e o valor da consulta na aba <b>Meus horários</b>. Você só receberá consultas depois de cadastrá-los.</p>`:
+`<div class="g2"><div><label for="cb">Data de nascimento</label><input id="cb" type="date" min="1900-01-01" max="${iso(new Date())}">${E('cb')}</div><div><label for="cd">Endereço</label><input id="cd">${E('cd')}</div></div>`}
+<label style="font-weight:600"><input type="checkbox" id="csms" style="width:auto"> Quero receber avisos também por SMS</label>
+<label style="font-weight:600"><input type="checkbox" id="clgpd" style="width:auto"> Concordo com o tratamento dos meus dados pessoais conforme a LGPD</label>${E('cl')}
+<p class="row"><button class="btn">Cadastrar</button><button type="button" class="btn sec" data-go="login">Voltar</button></p></form></div>`}
+
+function vLista(){return`<h1>Escolha seu nutricionista</h1>`+nutris().map(n=>`<div class="card row"><div class="grow"><h2>${esc(n.nome)}</h2><div class="mut">${esc(n.esp)} · ${esc(n.crn)}</div><div class="mut">${esc(n.end)}</div></div>
+<div><span class="star">★ ${avg(n)}</span> <span class="mut">(${n.aval.length})</span><br><b>${brl(n.valor)}</b></div>${hasH(n)?`<button class="btn" data-act="ver" data-id="${esc(n.email)}">Ver horários</button>`:'<span class="tag">Sem horários no momento</span>'}</div>`).join('')}
+
+function calHtml(n){
+ const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),today=iso(new Date());
+ let c=['D','S','T','Q','Q','S','S'].map(d=>`<span>${d}</span>`).join('')+'<i></i>'.repeat(first);
+ for(let d=1;d<=dim;d++){const s=y+'-'+pad(m+1)+'-'+pad(d);const has=s>=today&&slotsFor(n,s,bk.rid).some(x=>!x.off);
+  c+=`<button ${has?'':'disabled'} class="${has?'av':''} ${bk.date===s?'sel':''}" data-act="dia" data-id="${s}" aria-label="${d} de ${MESES[m]}">${d}</button>`}
+ return`<div class="row" style="justify-content:space-between;margin-bottom:8px"><button class="btn sec sm" data-act="mes" data-id="-1" aria-label="Mês anterior">‹</button><b>${MESES[m]} ${y}</b><button class="btn sec sm" data-act="mes" data-id="1" aria-label="Próximo mês">›</button></div><div class="cal">${c}</div>`}
+function vPerfil(){
+ const n=db.users.find(x=>x.email===bk.nid);const rs=bk.rid?db.appts.find(a=>a.id===bk.rid):null;
+ const sl=bk.date?slotsFor(n,bk.date,bk.rid):[];
+ return`<div class="row" style="justify-content:space-between;margin-bottom:10px"><h1 style="margin:0">${rs?'Remarcar consulta':'Agendar consulta'}</h1><button class="btn sec sm" data-act="fechar" aria-label="Fechar">✕</button></div>
+<div class="card"><h2>${esc(n.nome)}</h2><div class="mut">${esc(n.crn)} · ${esc(n.esp)}</div><div class="mut">📍 ${esc(n.end)}</div><div><span class="star">★ ${avg(n)}</span> <span class="mut">${n.aval.length} avaliações</span> · <b>${brl(n.valor)}</b></div></div>
+${rs?`<div class="card mut">Consulta atual: <b>${fd(rs.date)} às ${rs.time}</b>. Escolha o novo dia e horário com o mesmo profissional.</div>`:''}
+<div class="card"><h2>1. Escolha a data</h2><p class="mut">Dias em verde têm horários livres.</p>${calHtml(n)}</div>
+${bk.date?`<div class="card"><h2>2. Horários em ${fd(bk.date)}</h2><div class="slots">${sl.length?sl.map(s=>`<button ${s.off?'disabled':''} class="${bk.time===s.t?'sel':''}" data-act="hora" data-id="${s.t}">${s.t}</button>`).join(''):'<span class="mut">Sem atendimento neste dia.</span>'}</div></div>`:''}
+${bk.time?`<div class="card"><h2>3. Resumo</h2><p>Profissional: <b>${esc(n.nome)}</b><br>Data: <b>${fd(bk.date)}</b><br>Horário: <b>${bk.time}</b><br>Valor: <b>${brl(n.valor)}</b></p><button class="btn" data-act="confirma">${rs?'Confirmar nova data':'Confirmar Agendamento'}</button></div>`:''}`}
+
+function compText(a){const n=db.users.find(x=>x.email===a.nid),p=db.users.find(x=>x.email===a.pid);return`COMPROVANTE DE AGENDAMENTO – NutriAgenda\nProtocolo: ${a.id}\nPaciente: ${p?p.nome:''}\nProfissional: ${n.nome} (${n.crn})\nData: ${fd(a.date)} às ${a.time}\nLocal: ${n.end}\nValor: ${brl(n.valor)}\nStatus: ${a.status}`}
+function vComp(id){const a=db.appts.find(x=>x.id===id);return`<div class="row" style="justify-content:space-between;margin-bottom:10px"><h1 style="margin:0">Consulta agendada!</h1><button class="btn sec sm noprint" data-act="fechar" aria-label="Fechar">✕</button></div><div class="rc"><pre style="white-space:pre-wrap;font:inherit;margin:0">${esc(compText(a))}</pre></div>
+<p class="row noprint"><button class="btn" data-act="share" data-id="${a.id}">Compartilhar comprovante</button><button class="btn sec" data-act="print">Salvar / imprimir</button><button class="btn sec" data-go="minhas">Minhas consultas</button></p>`}
+
+function apCard(a,who){const n=db.users.find(x=>x.email===a.nid),p=db.users.find(x=>x.email===a.pid);const up=upcoming(a);
+ return`<div class="card row"><div class="grow"><b>${fd(a.date)} às ${a.time}</b> <span class="tag ${a.status}">${a.status}</span><div>${who==='p'?esc(n.nome)+' · '+esc(n.esp):esc(p.nome)+' · '+esc(p.tel)}</div><div class="mut">${brl(n.valor)}${a.hist.length?' · remarcada '+a.hist.length+'x (original: '+fd(a.hist[0].date)+' '+a.hist[0].time+')':''}</div>${a.obs?`<div style="margin-top:4px">📝 <b>Descrição:</b> ${esc(a.obs)}</div>`:''}</div>
+<div class="row">${who==='n'&&a.status==='Agendada'?`<button class="btn sm" data-act="conf" data-id="${a.id}">Confirmar</button>`:''}${who==='n'&&a.status==='Confirmada'?`<button class="btn sm" data-act="encerrar" data-id="${a.id}">Encerrar consulta</button>`:''}${up&&who==='p'?`<button class="btn sec sm" data-act="remarcar" data-id="${a.id}">Remarcar</button>`:''}${up?`<button class="btn dng sm" data-act="cancelar" data-id="${a.id}">Cancelar Consulta</button>`:''}</div></div>`}
+function vMinhas(){const l=db.appts.filter(a=>a.pid===db.session).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));const f=l.filter(upcoming),h=l.filter(a=>!upcoming(a)).reverse();
+ return`<h1>Minhas consultas</h1>${f.length?f.map(a=>apCard(a,'p')).join(''):'<div class="card">Você não tem consultas futuras. <button class="lnk" data-go="lista">Agendar agora</button></div>'}${h.length?`<h2>Histórico</h2>`+h.map(a=>apCard(a,'p')).join(''):''}`}
+function vAgenda(){const all=db.appts.filter(a=>a.nid===db.session).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));const l=all.filter(a=>['Agendada','Confirmada'].includes(a.status)),hist=all.filter(a=>!l.includes(a)).reverse();
+ return`<h1>Agenda de consultas</h1>${hasH(me())?'':'<div class="card" style="border-color:var(--acc)"><b>Cadastre seus horários e o valor da consulta para começar a receber consultas.</b><p class="mut" style="margin:4px 0 10px">Enquanto não houver horários e valor definidos, os pacientes não conseguem agendar com você.</p><button class="btn" data-go="horarios">Ir para Meus horários</button></div>'}${l.length?l.map(a=>apCard(a,'n')).join(''):'<div class="card">Nenhuma consulta marcada ainda. Confira se seus horários estão cadastrados em “Meus horários”.</div>'}${hist.length?'<h2>Histórico</h2>'+hist.map(a=>apCard(a,'n')).join(''):''}`}
+function vHor(){const u=me();const d=V.dia??1;const sel=u.horarios[d]||[];
+ return`<h1>Meus horários</h1><div class="card"><div class="row" style="margin-bottom:12px">${[1,2,3,4,5,6,0].map(i=>`<button class="chip ${d===i?'sel':''}" data-act="dsem" data-id="${i}">${DIAS[i].slice(0,3)}${(u.horarios[i]||[]).length?' ('+u.horarios[i].length+')':''}</button>`).join('')}</div>
+<p class="mut">Marque os horários disponíveis na ${DIAS[d].toLowerCase()}${d>0&&d<6?'-feira':''}. As alterações são salvas na hora.</p><div class="slots">${HORAS.map(h=>`<button class="${sel.includes(h)?'sel':''}" data-act="tog" data-id="${h}">${h}</button>`).join('')}</div>
+<hr style="border:0;border-top:1px solid var(--bd);margin:16px 0"><label for="vv">Valor da consulta (R$)</label><div class="row"><input id="vv" inputmode="numeric" placeholder="R$180.00" value="${u.valor>0?'R$'+Number(u.valor).toFixed(2):''}" style="max-width:180px"><button class="btn sm" data-act="valor">Salvar valor</button></div></div>`}
+function vAvisos(){const l=db.notes.filter(x=>x.to===db.session);me().seen=Date.now();save();return`<div class='row' style='gap:6px;margin-bottom:12px'><button class='ib' data-go='${me().perfil==='paciente'?'inicio':'agenda'}' aria-label='Voltar ao início' title='Voltar ao início'>${svg('chev')}</button><h1 style='margin:0'>Avisos</h1></div>${l.length?l.map(x=>`<div class="card">${esc(x.msg)}<div class="mut">${new Date(x.t).toLocaleString('pt-BR')}</div></div>`).join(''):'<div class="card">Você ainda não tem avisos. Confirmações, alterações e cancelamentos aparecem aqui e são enviados por e-mail.</div>'}`}
+
+let bkm=null;
+let bkf=vPerfil;
+function openBook(f){closeBook();bkf=f||vPerfil;bkm=document.createElement('div');bkm.className='modal bk';bkm.innerHTML='<div class="card" role="dialog" aria-modal="true" aria-label="Agendar consulta"></div>';bkm.addEventListener('click',e=>{if(e.target===bkm)closeBook()});document.body.appendChild(bkm);refreshBook()}
+function refreshBook(){if(!bkm)return;const t=bkm.scrollTop;bkm.firstChild.innerHTML=bkf();bkm.scrollTop=t}
+function closeBook(){if(bkm){bkm.remove();bkm=null}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBook()});
+function modal(html){const m=document.createElement('div');m.className='modal';m.innerHTML='<div class="card" role="dialog" aria-modal="true">'+html+'</div>';document.body.appendChild(m);m.querySelector('button')?.focus();return m}
+function msgAp(a,txt){const n=db.users.find(x=>x.email===a.nid),p=db.users.find(x=>x.email===a.pid);const t=`${txt}: ${fd(a.date)} às ${a.time} (${n.nome} / ${p.nome}).${a.obs?' Observação: '+a.obs:''}`;const c=notify(a.pid,t);notify(a.nid,t);toast('Aviso enviado por '+c+' ao paciente e ao profissional.')}
+
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-go],[data-act]');if(!b)return;
+ if(b.dataset.go){err={};closeBook();go(b.dataset.go);return}
+ const a=b.dataset.act,id=b.dataset.id;
+ if(a==='sair'){const m=modal('<h2>Sair da conta?</h2><p>Você precisará entrar novamente para acessar suas consultas.</p><div class="row"><button class="btn" id="no">Continuar logado</button><button class="btn sec" id="ok">Sim, sair</button></div>');m.querySelector('#no').onclick=()=>m.remove();m.querySelector('#ok').onclick=()=>{m.remove();closeBook();db.session=null;save();err={};go('login')}}
+ else if(a==='fechar'){closeBook()}
+ else if(a==='col'){col=!col;try{localStorage.setItem('na_col',col?'1':'0')}catch(x){}render()}
+ else if(a==='menu'){$('aside').classList.toggle('open')}
+ else if(a==='ver'){bk={nid:id};cm=new Date();openBook()}
+ else if(a==='mes'){cm=new Date(cm.getFullYear(),cm.getMonth()+ +id,1);refreshBook()}
+ else if(a==='dia'){bk.date=id;bk.time=null;refreshBook()}
+ else if(a==='hora'){bk.time=id;refreshBook()}
+ else if(a==='confirma'){
+  if(bk.rid){const x=db.appts.find(z=>z.id===bk.rid);if(taken(bk.nid,bk.date,bk.time,x.id)){toast('Esse horário acabou de ser ocupado.');return}
+   x.hist.push({date:x.date,time:x.time});x.date=bk.date;x.time=bk.time;x.status='Agendada';save();msgAp(x,'Consulta remarcada para');bk={};closeBook();go('minhas')}
+  else{if(taken(bk.nid,bk.date,bk.time)){toast('Esse horário acabou de ser ocupado.');return}
+   const x={id:'NA'+Date.now().toString(36).toUpperCase(),pid:db.session,nid:bk.nid,date:bk.date,time:bk.time,status:'Agendada',hist:[]};db.appts.push(x);save();msgAp(x,'Consulta agendada para');bk={};const cid=x.id;openBook(()=>vComp(cid))}}
+ else if(a==='remarcar'){const x=db.appts.find(z=>z.id===id);bk={nid:x.nid,rid:id};cm=new Date();openBook()}
+ else if(a==='cancelar'){const m=modal(`<h2>Cancelar consulta</h2><p>Tem certeza que deseja cancelar? Poderá haver política de cancelamento com até 24h de antecedência.</p>${me().perfil==='nutri'?'<label for="obs">Descrição (opcional)</label><input id="obs" maxlength="200" style="margin-bottom:14px" placeholder="Ex.: paciente não compareceu, paciente cancelou...">':''}<div class="row"><button class="btn dng" id="ok">Sim, cancelar</button><button class="btn sec" id="no">Manter consulta</button></div>`);
+  m.querySelector('#no').onclick=()=>m.remove();m.querySelector('#ok').onclick=()=>{const x=db.appts.find(z=>z.id===id);x.status='Cancelada';const o=m.querySelector('#obs');if(o&&o.value.trim())x.obs=o.value.trim();save();m.remove();msgAp(x,'Consulta cancelada');render()}}
+ else if(a==='conf'){const x=db.appts.find(z=>z.id===id);x.status='Confirmada';save();msgAp(x,'Consulta confirmada');render()}
+ else if(a==='encerrar'){const x=db.appts.find(z=>z.id===id);const m=modal('<h2>Encerrar consulta?</h2><p>A consulta passará para o histórico como <b>Encerrada</b> e o paciente será avisado.</p><label for="obs">Descrição (opcional)</label><input id="obs" maxlength="200" style="margin-bottom:14px" placeholder="Ex.: atendimento realizado, paciente não compareceu..."><div class="row"><button class="btn" id="ok">Sim, encerrar</button><button class="btn sec" id="no">Voltar</button></div>');m.querySelector('#no').onclick=()=>m.remove();m.querySelector('#ok').onclick=()=>{x.status='Encerrada';const o=m.querySelector('#obs');if(o&&o.value.trim())x.obs=o.value.trim();save();m.remove();msgAp(x,'Consulta encerrada');render()}}
+ else if(a==='dsem'){V.dia=+id;render()}
+ else if(a==='tog'){const u=me();const d=V.dia??1;let s=u.horarios[d]||[];s=s.includes(id)?s.filter(h=>h!==id):[...s,id].sort();u.horarios[d]=s;save();render()}
+ else if(a==='valor'){const v=pv($('#vv').value);if(!(v>0)){toast('Informe um valor válido.');return}me().valor=v;save();toast('Valor atualizado.')}
+ else if(a==='share'){const t=compText(db.appts.find(z=>z.id===id));try{if(navigator.share){await navigator.share({title:'Comprovante NutriAgenda',text:t})}else{await navigator.clipboard.writeText(t);toast('Comprovante copiado.')}}catch(x){toast('Não foi possível compartilhar. Selecione e copie o texto do comprovante.')}}
+ else if(a==='print'){try{window.print()}catch(x){toast('Use a opção de imprimir do navegador.')}}
+});
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='cc'){const d=t.value.replace(/\D/g,'').slice(0,11);t.value=d.length>9?d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6,9)+'-'+d.slice(9):d.length>6?d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6):d.length>3?d.slice(0,3)+'.'+d.slice(3):d}
+ else if(t.id==='ct'){const d=t.value.replace(/\D/g,'').slice(0,11);t.value=d.length>10?'('+d.slice(0,2)+')'+d.slice(2,7)+'-'+d.slice(7):d.length>6?'('+d.slice(0,2)+')'+d.slice(2,6)+'-'+d.slice(6):d.length>2?'('+d.slice(0,2)+')'+d.slice(2):d?'('+d:''}
+ else if(t.id==='ck'){const d=t.value.replace(/\D/g,'').slice(0,7);t.value=d?'CRN-'+d[0]+(d.length>1?' '+d.slice(1):''):''}
+ else if(t.id==='cv'||t.id==='vv'){const d=t.value.replace(/\D/g,'').replace(/^0+/,'').slice(0,8);t.value=d?'R$'+(parseInt(d,10)/100).toFixed(2):''}
+ else if(t.id==='cb'){const m=/^(\d{5,6})-(\d{2})-(\d{2})$/.exec(t.value);if(m)t.value=m[1].slice(0,4)+'-'+m[2]+'-'+m[3]}});
+document.addEventListener('change',e=>{if(e.target.name==='perfil'){V.perfil=e.target.value;err={};render()}});
+document.addEventListener('submit',async e=>{
+ e.preventDefault();const f=e.target.id,v=i=>($('#'+i)?.value||'').trim();err={};
+ if(f==='fLogin'){const em=v('le').toLowerCase(),pw=$('#lp').value;
+  if(!em)err.le='Digite seu e-mail.';else if(!emailOk(em))err.le='E-mail inválido. Exemplo: nome@dominio.com.';
+  if(!pw)err.lp='Digite sua senha.';
+  if(!Object.keys(err).length){const u=db.users.find(x=>x.email===em);if(!u||u.pass!==await hp(pw,em))err.lg='E-mail ou senha incorretos.';else{db.session=em;save();go(u.perfil==='nutri'?(hasH(u)?'agenda':'horarios'):'inicio');return}}
+  render();if(err.le)$('#le').value=em}
+ else if(f==='fEsq'){const em=v('ee').toLowerCase();if(!emailOk(em)){err.ee='Digite um e-mail válido.';render()}else{toast('Se houver uma conta com esse e-mail, enviamos o link de recuperação.');go('login')}}
+ else if(f==='fCad'){const p=V.perfil||'paciente',em=v('ce').toLowerCase(),s=$('#cs').value;
+  if(v('cn').split(' ').filter(Boolean).length<2)err.cn='Digite nome e sobrenome.';
+  if(!cpfOk(v('cc')))err.cc='CPF inválido. Confira os 11 dígitos.';
+  if(!emailOk(em))err.ce='E-mail inválido.';else if(db.users.some(x=>x.email===em))err.ce='Este e-mail já tem cadastro.';
+  if(v('ct').replace(/\D/g,'').length<10)err.ct='Telefone com DDD, ex.: (83)91234-5678.';
+  if(s.length<8)err.cs='A senha precisa ter ao menos 8 caracteres.';
+  if(s!==$('#cs2').value)err.cs2='As senhas não coincidem.';
+  if(!v('cd'))err.cd='Informe o endereço.';
+  if(!$('#clgpd').checked)err.cl='É preciso aceitar o tratamento de dados para continuar.';
+  if(p==='nutri'){if(!v('ck'))err.ck='Informe seu registro no CRN.';if(!v('cp'))err.cp='Informe a especialidade.'}
+  else if(!v('cb')||v('cb')<'1900-01-01'||v('cb')>iso(new Date()))err.cb='Informe uma data de nascimento válida (ano com 4 dígitos, até hoje).';
+  if(Object.keys(err).length){const keep={};['cn','cc','ce','ct','cd','ck','cp','cv','cb'].forEach(k=>keep[k]=v(k));const sm=$('#csms').checked;render();Object.entries(keep).forEach(([k,x])=>{if($('#'+k))$('#'+k).value=x});$('#csms').checked=sm;return}
+  const u={perfil:p,nome:v('cn'),email:em,cpf:v('cc').replace(/\D/g,''),tel:v('ct'),end:v('cd'),pass:await hp(s,em),sms:$('#csms').checked};
+  if(p==='nutri'){Object.assign(u,{crn:v('ck'),esp:v('cp'),valor:0,aval:[],horarios:{}});}
+  else u.nasc=v('cb');
+  db.users.push(u);save();toast('Cadastro realizado com sucesso! Faça login para continuar.');V={n:'login'};render()}
+});
+(async()=>{db=load();if(!db||!db.users)await seed();render()})();
+</script>
+</body>
+</html>
